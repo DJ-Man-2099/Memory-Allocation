@@ -43,6 +43,13 @@ class Ui_segment_Form(object):
         self.title_label.setFont(font)
         self.title_label.setObjectName("title_label")
 
+        self.rem_process_btn = QtWidgets.QPushButton(segment_Form)
+        self.rem_process_btn.setGeometry(QtCore.QRect(500, 520, 91, 30))
+        self.rem_process_btn.setObjectName("add_process_btn")
+        self.rem_process_btn.setStyleSheet("background-color:slategray")
+        self.rem_process_btn.clicked.connect(self.rem_process_clicked)
+
+
         self.segments_table = QtWidgets.QTableWidget(segment_Form)
         self.segments_table.setGeometry(QtCore.QRect(130, 200, 221, 301))
         self.segments_table.setColumnCount(2)
@@ -166,6 +173,7 @@ class Ui_segment_Form(object):
         self.submit_segment_btn.setText(_translate("segment_Form", "Submit segment"))
         self.submit_segment_size_btn.setText(_translate("segment_Form", "Submit Process"))
         self.process_name_lbl.setText(_translate("segment_Form", "Process Table"))
+        self.rem_process_btn.setText(_translate("segment_Form", "Remove Program"))
         ##############################################################################################################################
         ##############################################################################################################################
         ##############################################################################################################################
@@ -260,6 +268,16 @@ class Ui_segment_Form(object):
             self.segments_table.setItem(self.table_index, 1, QtWidgets.QTableWidgetItem(str(
                 Ui_holes_Form.processes_list[self.process_list_row_index].Segments[i])))
             self.table_index += 1
+
+    def rem_process_clicked(self):
+        Ui_holes_Form.processes_list.pop(self.process_list_table.currentRow())
+        self.process_list_table.removeRow(self.process_list_table.currentRow())
+        self.no_of_processes = 0
+        self.process_list_row_index = 0
+        for i in Ui_holes_Form.processes_list:
+            self.process_list_table.setItem(self.process_list_row_index, 0, QtWidgets.QTableWidgetItem(i.Name))
+            self.process_list_row_index += 1
+            self.no_of_processes += 1
 
 
 ##############################################################################################################################
