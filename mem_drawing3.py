@@ -269,6 +269,7 @@ class Main(QMainWindow, Ui_MainWindow):
         self.x = {}
         self.size = Ui_holes_Form.total_memory_for_holes_window.Size
         self.AL = 0
+        self.init = False
         # self.SHOW()
 
     def single_draw(self, pro_segment, holes, memory_size):
@@ -368,25 +369,43 @@ class Main(QMainWindow, Ui_MainWindow):
 
     def reserve(self):
         print("button Clicked")
-        hole = Hole(int(self.res_start.text()), int(self.res_size.text()))
-        if Ui_holes_Form.total_memory_for_holes_window.Add_Hole(hole,
-                                                                Ui_holes_Form.total_memory_for_holes_window.Pro_Seg):
-            self.pro_list = deepcopy(self.pro)
-            self.SHOW()
-        else:
+        try:
+            hole = Hole(int(self.res_start.text()), int(self.res_size.text()))
+            if Ui_holes_Form.total_memory_for_holes_window.Add_Hole(hole,
+                                                                    Ui_holes_Form.total_memory_for_holes_window.Pro_Seg):
+                self.pro_list = deepcopy(self.pro)
+                self.SHOW()
+            else:
+                error_msg = QtWidgets.QMessageBox()
+                error_msg.setWindowTitle("Hole Error")
+                error_msg.setText("This Hole Cannot be Allocated")
+                error_msg.setIcon(QtWidgets.QMessageBox.Critical)
+                error_msg.exec_()
+            self.res_start.clear()
+            self.res_size.clear()
+        except:
             error_msg = QtWidgets.QMessageBox()
-            error_msg.setWindowTitle("Hole Error")
-            error_msg.setText("This Hole Cannot be Allocated")
+            error_msg.setWindowTitle("Deallocate Error")
+            error_msg.setText("Please Enter Valid Reserved Data")
             error_msg.setIcon(QtWidgets.QMessageBox.Critical)
             error_msg.exec_()
-        self.res_start.clear()
-        self.res_size.clear()
 
     def alloc_btn(self):
+        if not self.init:
+            self.pro_choose.clear()
+            self.segment_table.setRowCount(0)
+            self.init = True
         if self.best_fit_radiobtn.isChecked():
             self.AL = 1
         elif self.first_fit_radiobtn.isChecked():
-            self.Al = 0
+            self.AL = 0
+        else:
+            error_msg = QtWidgets.QMessageBox()
+            error_msg.setWindowTitle("Allocation Error")
+            error_msg.setText("Please Select Algorithm first")
+            error_msg.setIcon(QtWidgets.QMessageBox.Critical)
+            error_msg.exec_()
+            return
         if len(self.pro_list) != 0:
             temp = list(self.pro_list[0].Segments.keys())
             t2 = Ui_holes_Form.total_memory_for_holes_window.Allocate_Segment(self.pro_list[0].Name, temp[0],
@@ -416,6 +435,13 @@ class Main(QMainWindow, Ui_MainWindow):
                 self.pro_list.pop(0)
 
     def allocate_process_clicked(self):
+        if not (self.first_fit_radiobtn.isChecked() and self.best_fit_radiobtn.isChecked()):
+            error_msg = QtWidgets.QMessageBox()
+            error_msg.setWindowTitle("Allocation Error")
+            error_msg.setText("Please Select Algorithm first")
+            error_msg.setIcon(QtWidgets.QMessageBox.Critical)
+            error_msg.exec_()
+            return
         for p in self.pro:
             if self.first_fit_radiobtn.isChecked():
                 Ui_holes_Form.total_memory_for_holes_window.Allocate_Process(p, 0)
@@ -427,6 +453,7 @@ class Main(QMainWindow, Ui_MainWindow):
         self.pro_choose.clear()
         self.pro_choose.addItems(Ui_holes_Form.total_memory_for_holes_window.Processes)
         self.pro_choose.setCurrentIndex(-1)
+        self.init = False
 
     def deallocate_process(self):
         t = self.pro_choose.currentText()

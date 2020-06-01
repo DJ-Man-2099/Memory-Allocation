@@ -270,14 +270,24 @@ class Ui_segment_Form(object):
             self.table_index += 1
 
     def rem_process_clicked(self):
-        Ui_holes_Form.processes_list.pop(self.process_list_table.currentRow())
-        self.process_list_table.removeRow(self.process_list_table.currentRow())
-        self.no_of_processes = 0
-        self.process_list_row_index = 0
-        for i in Ui_holes_Form.processes_list:
-            self.process_list_table.setItem(self.process_list_row_index, 0, QtWidgets.QTableWidgetItem(i.Name))
-            self.process_list_row_index += 1
-            self.no_of_processes += 1
+        try:
+            Ui_holes_Form.processes_list.pop(self.process_list_table.currentRow())
+            self.process_list_table.removeRow(self.process_list_table.currentRow())
+            self.segments_table.clear()
+            self.process_name_lbl.setText("Process Table")
+            self.no_of_processes = 0
+            self.process_list_row_index = 0
+            for i in Ui_holes_Form.processes_list:
+                self.process_list_table.setItem(self.process_list_row_index, 0, QtWidgets.QTableWidgetItem(i.Name))
+                self.process_list_row_index += 1
+                self.no_of_processes += 1
+        except:
+            error_msg = QtWidgets.QMessageBox()
+            error_msg.setWindowTitle("Process Error")
+            error_msg.setText("Please Choose a Process First")
+            error_msg.setIcon(QtWidgets.QMessageBox.Critical)
+            error_msg.exec_()
+
 
 
 ##############################################################################################################################
