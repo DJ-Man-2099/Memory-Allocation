@@ -435,7 +435,7 @@ class Main(QMainWindow, Ui_MainWindow):
                 self.pro_list.pop(0)
 
     def allocate_process_clicked(self):
-        if not (self.first_fit_radiobtn.isChecked() and self.best_fit_radiobtn.isChecked()):
+        if not (self.first_fit_radiobtn.isChecked() or self.best_fit_radiobtn.isChecked()):
             error_msg = QtWidgets.QMessageBox()
             error_msg.setWindowTitle("Allocation Error")
             error_msg.setText("Please Select Algorithm first")
